@@ -1,0 +1,73 @@
+public class AppDbContext : IdentityDbContext<AppUser>
+    {
+        public AppDbContext(DbContextOptions options) : base(options)
+        {
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Actor_Movie>().HasKey(am => new { am.MovieId, am.ActorId });
+            builder.Entity<Actor_Movie>().HasOne(m => m.Movie).WithMany(am => am.Actor_Movies).HasForeignKey(m => m.MovieId);
+            builder.Entity<Actor_Movie>().HasOne(m => m.Actor).WithMany(am => am.Actor_Movies).HasForeignKey(m => m.ActorId);
+        }
+        public DbSet<Gender> Genders { get; set; }
+        public DbSet<Actor> Actors { get; set; }
+        public DbSet<Produser> Produsers { get; set; }
+        public DbSet<Cinema> Cinemas { get; set; }
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Actor_Movie> Actors_Movies { get; set; }
+    }
+    
+    public class Movie
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string Name { get; set; }
+        [Required]
+        [DataType(DataType.MultilineText)]
+        public string? Description { get; set; }
+        [Required]
+        public double? Price { get; set; }
+        [StringLength(100)]
+        public string? ImgUrl { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public MovieCategory? MovieCategory { get; set; }
+        [ValidateNever]
+        public List<Actor_Movie>? Actor_Movies { get; set; }
+        public int CinemaId { get; set; }
+        [ForeignKey(nameof(CinemaId))]
+        [ValidateNever]
+        public Cinema? Cinema { get; set; }
+        public int ProduserId { get; set; }
+        [ForeignKey(nameof(ProduserId))]
+        [ValidateNever]
+        public Produser? Produser { get; set; }
+    }
+    
+    public class Actor
+    {
+        [Key]
+        public int Id { get; set; }
+        [StringLength(100)]
+        public string? ProfilePictureUrl { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string? FullName { get; set; }
+        [Required]
+        [DataType(DataType.MultilineText)]
+        public string? Bio { get; set; }
+        public DateTime? MyPrCreatedDateoperty { get; set; } = DateTime.Now;
+        [ValidateNever]
+        public List<Actor_Movie>? Actor_Movies { get; set; }
+    }
+    
+    public class Actor_Movie
+    {
+        public int MovieId { get; set; }
+        public Movie Movie { get; set; }
+        public int ActorId { get; set; }
+        public Actor Actor { get; set; }
+    }
