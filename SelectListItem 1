@@ -1,0 +1,90 @@
+// GET: Schol/Create
+        public IActionResult Create()
+        {
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email");
+            return View();
+        }
+        
+        =====================================view==================================================
+        <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+            </div>
+       =====================================view================================================== 
+
+
+// POST: Schol/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(ScholInfo scholInfo)
+        {
+            if (ModelState.IsValid)
+            {
+                scholInfo.ScholInfodATE = DateTime.Now;
+                scholInfo.AppUser = await _userManager.GetUserAsync(User);
+                //_context.Add(scholInfo);
+                _school.Insert(scholInfo);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", scholInfo.UserId);
+            return View(scholInfo);
+        }
+
+// GET: Schol/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null || _context.ScholInfo == null)
+            {
+                return NotFound();
+            }
+
+            var scholInfo = await _context.ScholInfo.FindAsync(id);
+            if (scholInfo == null)
+            {
+                return NotFound();
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", scholInfo.UserId);
+            return View(scholInfo);
+        }
+        =====================================view==================================================
+        <div class="form-group">
+                <label asp-for="UserId" class="control-label"></label>
+                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
+                <span asp-validation-for="UserId" class="text-danger"></span>
+            </div>
+        =====================================view==================================================
+        
+// POST: Schol/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ScholInfoId,ScholInfoName,ScholInfoSemel,ScholInfoEmail,ScholInfodATE,UserId")] ScholInfo scholInfo)
+        {
+            if (id != scholInfo.ScholInfoId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(scholInfo);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ScholInfoExists(scholInfo.ScholInfoId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Email", scholInfo.UserId);
+            return View(scholInfo);
+        }
