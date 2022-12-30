@@ -1,0 +1,18 @@
+public IActionResult Index()
+        {
+            var productsList = (from product in _databaseContext.Product
+                                select new SelectListItem()
+                                {
+                                    Text = product.Name,
+                                    Value = product.ProductId.ToString(),
+                                }).ToList();
+
+            productsList.Insert(0, new SelectListItem()
+            {
+                Text = "----Select----",
+                Value = string.Empty
+            });
+
+            ViewBag.Listofproducts = productsList;
+            return View();
+        }
