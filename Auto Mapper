@@ -1,0 +1,28 @@
+=====================================================================================
+step 1:
+=====================================================================================
+install package:
+AutoMapper.Extensions.Microsoft.DependencyInjection
+
+=====================================================================================
+step 2: go to pragram file add service
+=====================================================================================
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+=====================================================================================
+step 3: create folder with name mapper:
+=====================================================================================
+create class class MappingProfile:Profile
+
+public class MappingProfile:Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<Note, NoteVM>().ReverseMap();
+            CreateMap<Hoppy, HoppyVM>().ReverseMap();
+        }
+    }
+   
+=====================================================================================
+step 4: create folder with name mapper:
+=====================================================================================
