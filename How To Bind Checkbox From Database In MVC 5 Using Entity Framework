@@ -1,0 +1,65 @@
+=============================================================================================================
+Step 1: Create Tow ViewModel
+=============================================================================================================
+ViewModel 1:
+public partial class Language  
+    {  
+        public int ID { get; set; }  
+        public string Programming_Language { get; set; }  
+  
+        public bool IsCheked { get; set; }  
+    }  
+  
+ViewModel 1:
+public class LanguageModel  
+    {  
+        public List<Language> Languages { get; set; }  
+    }  
+
+=============================================================================================================
+Step 2: In The Controller Add Get And Post Mehtod
+=============================================================================================================
+
+[HttpGet]  
+public ActionResult Index()  
+{  
+  LanguageModel ProgrammingLanguage = new LanguageModel();  
+  using (DBModel db = new DBModel())  
+    {  
+      ProgrammingLanguage.Languages = db.Languages.ToList<Language>();  
+    }  
+  return View(ProgrammingLanguage);  
+}  
+        
+[HttpPost]  
+public ActionResult Index(LanguageModel model)  
+{  
+  var selectedLanguage = model.Languages.Where(x => x.IsCheked == true).ToList<Language>();  
+  return Content(String.Join(",", selectedLanguage.Select(x => x.Programming_Language)));  
+}  
+=============================================================================================================
+Step 3: Creat View
+=============================================================================================================
+<div class="container py-4">  
+  <h5 class="text-center text-uppercase">How to bind checkbox in mvc5 from database</h5>  
+  @using (Html.BeginForm())  
+    {  
+      <table>  
+        @for (int i = 0; i < Model.Languages.Count; i++)  
+          {  
+            if (i % 4 == 0)  
+              {  
+                @:  
+                <tr></tr>  
+              }  
+              <td>  
+                @Html.CheckBoxFor(x => x.Languages[i].IsCheked, new { @class = "custom-checkbox" })  
+                <label>@Model.Languages[i].Programming_Language</label>  
+                @Html.HiddenFor(x => x.Languages[i].ID)  
+                @Html.HiddenFor(x => x.Languages[i].Programming_Language)  
+              </td>  
+           }  
+      </table>  
+      <input type="submit" class="btn btn-outline-primary rounded-0" value="Submit" />  
+    }  
+    </div>  
