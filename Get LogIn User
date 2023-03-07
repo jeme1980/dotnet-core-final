@@ -1,3 +1,5 @@
+var loguser = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
 public async Task<IActionResult> YourMethodName()
     {
         var userId =  User.FindFirstValue(ClaimTypes.NameIdentifier) // will give the user's userId
